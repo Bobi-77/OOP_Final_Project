@@ -18,6 +18,9 @@ public:
     const std::string& getDepartment() const;
     const std::string& getShift() const;
 
+    void setDepartment(const std::string& department);
+    void setShift(const std::string& shift);
+
     void display() const override;
 };
 

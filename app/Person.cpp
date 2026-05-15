@@ -35,6 +35,14 @@ const std::string& Person::getPhone() const {
     return phone;
 }
 
+void Person::setFirstName(const std::string& newFirstName) {
+    firstName = newFirstName;
+}
+
+void Person::setLastName(const std::string& newLastName) {
+    lastName = newLastName;
+}
+
 void Person::setPhone(const std::string& newPhone){
     if (newPhone.length() != 10) {
         throw std::invalid_argument("Invalid phone number! It must be 10 symblos");

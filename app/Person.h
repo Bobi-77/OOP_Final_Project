@@ -25,6 +25,8 @@ public:
     const std::string& getDateOfBirth() const;
 
     void setPhone(const std::string& phone);
+    void setFirstName(const std::string& firstName);
+    void setLastName(const std::string& lastName);
 
     virtual void display() const = 0;
 

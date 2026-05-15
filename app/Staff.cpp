@@ -18,6 +18,14 @@ const std::string& Staff::getShift() const {
     return shift;
 }
 
+void Staff::setDepartment(const std::string& newDepartment) {
+    department = newDepartment;
+}
+
+void Staff::setShift(const std::string& newShift) {
+    shift = newShift;
+}
+
 void Staff::display() const {
     std::cout << "ID: " << getId() << " | Name: " << getFullName()
     << " | Phone: " << getPhone() << " | DOB: " << getDateOfBirth()
