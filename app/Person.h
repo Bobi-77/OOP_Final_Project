@@ -5,22 +5,24 @@
 
 class Person {
 private:
-    int id;
+    std::string id;
     std::string firstName;
     std::string lastName;
     std::string phone;
+    std::string dateOfBirth;
 
 public:
     Person();
-    Person(int id, const std::string& firstName, const std::string& lastname, const std::string& phone);
+    Person(const std::string& id, const std::string& firstName, const std::string& lastName, const std::string& phone, const std::string& dateOfBirth);
 
     virtual ~Person() = default;
 
-    int getId() const;
+    const std::string& getId() const;
     const std::string& getFirstName() const;
     const std::string& getLastName() const;
     std::string getFullName() const;
     const std::string& getPhone() const;
+    const std::string& getDateOfBirth() const;
 
     void setPhone(const std::string& phone);
 

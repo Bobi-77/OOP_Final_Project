@@ -1,17 +1,17 @@
 #include "Person.h"
 #include <stdexcept>
 
-Person::Person() : id(0), firstName(""), lastName(""), phone(""){
+Person::Person() : id(""), firstName(""), lastName(""), phone(""), dateOfBirth(""){
 
 }
 
-Person::Person(int id, const std::string& firstName, const std::string& lastName, const std::string& phone) 
-    : id(id), firstName(firstName), lastName(lastName) {
+Person::Person(const std::string& id, const std::string& firstName, const std::string& lastName, const std::string& phone, const std::string& dateOfBirth) 
+    : id(id), firstName(firstName), lastName(lastName), phone(phone), dateOfBirth(dateOfBirth) {
 
     setPhone(phone);
 }
 
-int Person::getId() const {
+const std::string& Person::getId() const {
     return id;
 }
 
@@ -21,6 +21,10 @@ const std::string& Person::getFirstName() const {
 
 const std::string& Person::getLastName() const {
     return lastName;
+}
+
+const std::string& Person::getDateOfBirth() const {
+    return dateOfBirth;
 }
 
 std::string Person::getFullName() const {
