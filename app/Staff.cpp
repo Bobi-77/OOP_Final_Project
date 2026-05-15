@@ -29,5 +29,5 @@ void Staff::setShift(const std::string& newShift) {
 void Staff::display() const {
     std::cout << "ID: " << getId() << " | Name: " << getFullName()
     << " | Phone: " << getPhone() << " | DOB: " << getDateOfBirth()
-    << " | Department: " << department << " | Shift: " << shift;
+    << " | Department: " << department << " | Shift: " << shift << std::endl;
 }

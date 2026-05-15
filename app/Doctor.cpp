@@ -28,7 +28,7 @@ void Doctor::setCabinetNumber(int newCabinetNumber) {
 
 void Doctor::display() const {
     Staff::display();
-    std::cout << " | Speciality: " << speciality << " | Cabinet Number: " << cabinetNumber;
+    std::cout << " | Speciality: " << speciality << " | Cabinet Number: " << cabinetNumber << std::endl;
 }
 
 std::string Doctor::serialize() const {
