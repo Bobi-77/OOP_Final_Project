@@ -4,6 +4,8 @@
 #include "Doctor.h"
 #include "Nurse.h"
 #include "Patient.h"
+#include "Appointment.h"
+#include "AppointmentTypes.h"
 #include <vector>
 #include <string>
 
@@ -11,6 +13,7 @@ class Hospital {
 private:
     std::vector<Staff*> staffMembers;
     std::vector<Patient*> patients;
+    std::vector<Appointment*> appointments;
 
 public:
     Hospital();
@@ -25,6 +28,9 @@ public:
     
     void displayStaffByRole(const std::string& role) const;
     void displayDoctorsBySpeciality(const std::string& speciality) const;
+    void bookRegularAppointment(const std::string& appointmentId, const std::string& patientId, const std::string& doctorId, const std::string& dateTime);
+    void cancelAppointment(const std::string& appointmentId);
+    void displayAppointments() const;
 };
 
 

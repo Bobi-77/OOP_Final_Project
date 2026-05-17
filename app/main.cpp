@@ -11,6 +11,9 @@ void displayMenu() {
     std::cout << "5. Display Staff by Role" << std::endl;
     std::cout << "6. Display Doctors by Speciality" << std::endl;
     std::cout << "7. Edit Patient Information" << std::endl;
+    std::cout << "8. Book Regular Appointment" << std::endl;
+    std::cout << "9. Cancel Appointment" << std::endl;
+    std::cout << "10. Display Appointments" << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "Please select an option: ";
 }
@@ -134,6 +137,30 @@ int main(){
                 } else {
                     std::cout << "Patient with ID " << patientId << " not found!" << std::endl;
                 }
+                break;
+            }
+            case 8: {
+                std::string appointmentId, patientId, doctorId, dateTime;
+                std::cout << "Enter Appointment ID: ";
+                std::getline(std::cin, appointmentId);
+                std::cout << "Enter Patient ID: ";
+                std::getline(std::cin, patientId);
+                std::cout << "Enter Doctor ID: ";
+                std::getline(std::cin, doctorId);
+                std::cout << "Enter Date & Time (YYYY-MM-DD HH:MM): ";
+                std::getline(std::cin, dateTime);
+                hospital.bookRegularAppointment(appointmentId, patientId, doctorId, dateTime);
+                break;
+            }
+            case 9: {
+                std::string appointmentId;
+                std::cout << "Enter Appointment ID to Cancel: ";
+                std::getline(std::cin, appointmentId);
+                hospital.cancelAppointment(appointmentId);
+                break;
+            }
+            case 10: {
+                hospital.displayAppointments();
                 break;
             }
             case 0: {

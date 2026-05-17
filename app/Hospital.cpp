@@ -10,10 +10,16 @@ Hospital::~Hospital() {
         delete staff;
     }
     staffMembers.clear();
+
     for (Patient* patient : patients) {
         delete patient;
     }
     patients.clear();
+
+    for (Appointment* appointment : appointments) {
+        delete appointment;
+    }
+    appointments.clear();
 }
 
 void Hospital::registerPatient(const std::string& id, const std::string& firstName, const std::string& lastName, const std::string& phone, const std::string& dateOfBirth) {
@@ -102,3 +108,61 @@ void Hospital::displayDoctorsBySpeciality(const std::string& speciality) const {
         std::cout << "No doctors found with speciality: " << speciality << std::endl;
     }
 }
+
+void Hospital::bookRegularAppointment(const std::string& appointmentId, const std::string& patientId, const std::string& doctorId, const std::string& dateTime) {
+    Patient* patient = findPatientById(patientId);
+    if (!patient) {
+        std::cout << "Patient with ID " << patientId << " not found!" << std::endl;
+        return;
+    }
+
+    Doctor* doctor = nullptr;
+    for (Staff* staff : staffMembers) {
+        if (staff->getRole() == "Doctor" && staff->getId() == doctorId) {
+            doctor = dynamic_cast<Doctor*>(staff);
+            break;
+        }
+    }
+
+    if (!doctor) {
+        std::cout << "Doctor with ID " << doctorId << " not found!" << std::endl;
+        return;
+    }
+
+    if (!doctor->isAvailable(dateTime)) {
+        std::cout << "Doctor " << doctor->getFullName() << " is not available at " << dateTime << "." << std::endl;
+        return;
+    }
+
+    Appointment* newAppointment = new RegularAppointment(appointmentId, patientId, doctorId, dateTime);
+    appointments.push_back(newAppointment);
+    patient->addAppointment(appointmentId);
+    std::cout << "Appointment booked successfully for patient " << patient->getFullName() << " with doctor " << doctor->getFullName() << " at " << dateTime << "." << std::endl;
+}
+
+void Hospital::cancelAppointment(const std::string& appointmentId) {
+    for (Appointment* appointment : appointments) {
+        if (appointment->getId() == appointmentId) {
+            if(appointment->getStatus() == "Cancelled") {
+                std::cout << "Appointment with ID " << appointmentId << " is already cancelled!" << std::endl;
+                return;
+            }
+            appointment->cancel();
+            std::cout << "Appointment with ID " << appointmentId << " has been cancelled." << std::endl;
+            return;
+        }
+    }
+    std::cout << "Appointment with ID " << appointmentId << " not found!" << std::endl;
+}
+
+void Hospital::displayAppointments() const {
+    if(appointments.empty()) {
+        std::cout << "No appointments scheduled." << std::endl;
+        return;
+    }
+    std::cout << "=== Appointments ===" << std::endl;
+    for (const Appointment* appointment : appointments) {
+        appointment->display();
+    }
+}
+
