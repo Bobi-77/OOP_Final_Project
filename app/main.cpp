@@ -14,6 +14,8 @@ void displayMenu() {
     std::cout << "8. Book Regular Appointment" << std::endl;
     std::cout << "9. Cancel Appointment" << std::endl;
     std::cout << "10. Display Appointments" << std::endl;
+    std::cout << "11. Conduct Exam & Issue Prescription" << std::endl;
+    std::cout << "12. Display Patient History" << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "Please select an option: ";
 }
@@ -161,6 +163,32 @@ int main(){
             }
             case 10: {
                 hospital.displayAppointments();
+                break;
+            }
+            case 11: {
+                std::string examId, appointmentId, diagnosis, notes;
+                bool issuePrescription;
+
+                std::cout << "Enter Exam ID: ";
+                std::getline(std::cin, examId);
+                std::cout << "Enter Appointment ID: ";
+                std::getline(std::cin, appointmentId);
+                std::cout << "Enter Diagnosis: ";
+                std::getline(std::cin, diagnosis);
+                std::cout << "Enter Notes: ";
+                std::getline(std::cin, notes);
+                std::cout << "Issue Prescription? (1 for Yes, 0 for No): ";
+                std::cin >> issuePrescription;
+                std::cin.ignore(10000, '\n');
+
+                hospital.conductExam(examId, appointmentId, diagnosis, notes, issuePrescription);
+                break;
+            }
+            case 12: {
+                std::string patientId;
+                std::cout << "Enter Patient ID to Display History: ";
+                std::getline(std::cin, patientId);
+                hospital.displayPatientHistory(patientId);
                 break;
             }
             case 0: {

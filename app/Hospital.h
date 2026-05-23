@@ -6,6 +6,7 @@
 #include "Patient.h"
 #include "Appointment.h"
 #include "AppointmentTypes.h"
+#include "Exam.h"
 #include <vector>
 #include <string>
 
@@ -31,7 +32,10 @@ public:
     void bookRegularAppointment(const std::string& appointmentId, const std::string& patientId, const std::string& doctorId, const std::string& dateTime);
     void cancelAppointment(const std::string& appointmentId);
     void displayAppointments() const;
+    void conductExam(const std::string& examId, const std::string& appointmentId, const std::string& diagnosis, const std::string& notes, bool issuePrescription);
+    void displayPatientHistory(const std::string& patientId) const;
 };
+
 
 
 #endif

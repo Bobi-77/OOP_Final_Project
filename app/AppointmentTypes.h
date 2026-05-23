@@ -22,7 +22,7 @@ public:
         return "Regular";
     }
 
-    std::string setNotes(const std::string& newNotes) {
+    void setNotes(const std::string& newNotes) {
         notes = newNotes;
     }
 };

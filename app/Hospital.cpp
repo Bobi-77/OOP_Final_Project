@@ -166,3 +166,89 @@ void Hospital::displayAppointments() const {
     }
 }
 
+void Hospital::conductExam(const std::string& examId, const std::string& appointmentId, const std::string& diagnosis, const std::string& notes, bool issuePrescription) {
+    Appointment* currentAppointment = nullptr;
+    for (Appointment* appointment : appointments) {
+        if (appointment->getId() == appointmentId) {
+            currentAppointment = appointment;
+            break;
+        }
+    }
+
+    if(!currentAppointment) {
+        std::cout << "Appointment with ID " << appointmentId << " not found!" << std::endl;
+        return;
+    }
+
+    if(currentAppointment->getStatus() != "Scheduled") {
+        std::cout << "Error: Only scheduled appointments can be examined. Current status: " << currentAppointment->getStatus() << std::endl;
+        return;
+    }
+
+    Exam* newExam = new Exam(examId, appointmentId, diagnosis, notes);
+
+    if(issuePrescription) {
+        std::string prescriptionId = "RX-" + examId;
+        std::string dosage, duration, medication;
+
+        std::cout << "--- Issuing Prescription (" << prescriptionId << ") ---" << std::endl;
+
+        std::cout << "Enter dosage instructions: ";
+        std::getline(std::cin, dosage);
+
+        std::cout << "Enter duration: ";
+        std::getline(std::cin, duration);
+
+        Prescription prescription(prescriptionId, dosage, duration, currentAppointment->getDateTime());
+
+        std::cout << "Enter medications (type 'done' to finish): " << std::endl;
+        while (true) {
+            std::cout << "Medication: ";
+            std::getline(std::cin, medication);
+            if (medication == "done" || medication == "Done" || medication.empty()) {
+                break;
+            }
+            prescription.addMedication(medication);
+        }
+
+        newExam->setPrescription(prescription);
+        std::cout << "Prescription generated successfully!" << std::endl;
+    }
+
+    std::cout << "Exam conducted successfully for Appointment ID: " << appointmentId << std::endl;
+    newExam->display();
+
+    Patient* patient = findPatientById(currentAppointment->getPatientId());
+    if (patient) {
+        std::string record = "Exam ID: " + examId + " | Diagnosis: " + diagnosis + " | Notes: " + notes + " | Date: " + currentAppointment->getDateTime();
+
+        if(issuePrescription) {
+            record += " | Prescription ID: RX-" + newExam->getExamID();
+        }
+
+        patient->addRecord(record);
+    } else {
+        std::cout << "Warning: Patient with ID " << currentAppointment->getPatientId() << " not found. Unable to update medical history." << std::endl;
+    }
+}
+
+void Hospital::displayPatientHistory(const std::string& patientId) const {
+    Patient* patient = findPatientById(patientId);
+    if (!patient) {
+        std::cout << "Patient with ID " << patientId << " not found!" << std::endl;
+        return;
+    }
+
+    const std::vector<std::string>& history = patient->getMedicalHistory();
+    
+    std::cout << "\n=== MEDICAL HISTORY FOR PATIENT: " << patient->getFullName() << " ===" << std::endl;
+    if (history.empty()) {
+        std::cout << "No medical history records found." << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < history.size(); ++i) {
+        std::cout << i + 1 << ". " << history[i] << std::endl;
+    }
+}
+
