@@ -1,5 +1,6 @@
 #include "Doctor.h"
 #include <iostream>
+#include <sstream>
 
 Doctor::Doctor() : Staff(), speciality(""), cabinetNumber(0) {
 
@@ -39,6 +40,47 @@ std::string Doctor::getRole() const {
     return "Doctor";
 }
 
-bool Doctor::isAvailable(const std::string& dt) const {
+bool Doctor::isAvailable(const std::string& dateTime) const {
+    for(const std::string& booked : bookedTimes) {
+        if (booked == dateTime) {
+            std::cout << "Doctor " << getFullName() << " is already booked at " << dateTime << "." << std::endl;
+            return false;
+        }
+    }
+
+    size_t spacePos = dateTime.find(' ');
+    if (spacePos != std::string::npos && spacePos + 1 < dateTime.size()) {
+        std::string timePart = dateTime.substr(spacePos + 1, 2);
+
+        try {
+            int hour = std::stoi(timePart);
+            
+            std::string currentShift = getShift();
+            if (currentShift == "Morning") {
+                if(hour < 8 || hour >= 14) {
+                    std::cout << "Doctor " << getFullName() << " is not on shift at " << dateTime << "." << std::endl;
+                    return false;
+                }
+            } else if (currentShift == "Afternoon") {
+                if(hour < 14 || hour >= 20) {
+                    std::cout << "Doctor " << getFullName() << " is not on shift at " << dateTime << "." << std::endl;
+                    return false;
+                }
+            } else if (currentShift == "Night") {
+                if(hour < 20 && hour >= 8) {
+                    std::cout << "Doctor " << getFullName() << " is not on shift at " << dateTime << "." << std::endl;
+                    return false;
+                }
+            }
+        } catch (const std::exception& e) {
+            std::cout << "Invalid time format in dateTime: " << dateTime << ". Expected format: YYYY-MM-DD HH:MM" << std::endl;
+            return false;
+        }
+    } else {
+        std::cout << "Invalid dateTime format: " << dateTime << ". Expected format: YYYY-MM-DD HH:MM" << std::endl;
+        return false;
+    }
+
     return true;
+
 }

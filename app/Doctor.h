@@ -3,11 +3,13 @@
 
 #include "Staff.h"
 #include <string>
+#include <vector>
 
 class Doctor : public Staff {
 private:
     std::string speciality;
     int cabinetNumber;
+    std::vector<std::string> bookedTimes;
 
 public:
     Doctor();
@@ -24,7 +26,10 @@ public:
     std::string serialize() const override;
     std::string getRole() const override;
 
-    bool isAvailable(const std::string& dt) const;
+    void addBookedTime(const std::string& dateTime) {
+        bookedTimes.push_back(dateTime);
+    }
+    bool isAvailable(const std::string& dateTime) const;
 };
 
 
