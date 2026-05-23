@@ -129,14 +129,12 @@ void Hospital::bookRegularAppointment(const std::string& appointmentId, const st
         return;
     }
 
-    if (!doctor->isAvailable(dateTime)) {
-        std::cout << "Doctor " << doctor->getFullName() << " is not available at " << dateTime << "." << std::endl;
-        return;
-    }
-
     Appointment* newAppointment = new RegularAppointment(appointmentId, patientId, doctorId, dateTime);
     appointments.push_back(newAppointment);
     patient->addAppointment(appointmentId);
+
+    doctor->addBookedTime(dateTime);
+
     std::cout << "Appointment booked successfully for patient " << patient->getFullName() << " with doctor " << doctor->getFullName() << " at " << dateTime << "." << std::endl;
 }
 
