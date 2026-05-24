@@ -39,6 +39,7 @@ void Hospital::registerPatient(const std::string& id, const std::string& firstNa
         Patient* newPatient = new Patient(id, firstName, lastName, phone, dateOfBirth);
         patients.push_back(newPatient);
         std::cout << "Patient " << newPatient->getFullName() << " registered successfully!" << std::endl;
+        savePatients("patients.txt");
     } catch (const std::exception& e) {
         std::cout << "Error registering patient: " << e.what() << std::endl;
     }
@@ -69,6 +70,7 @@ void Hospital::addDoctor(const std::string& id, const std::string& firstName, co
         Doctor* newDoctor = new Doctor(id, firstName, lastName, phone, dateOfBirth, department, shift, speciality, cabinetNumber);
         staffMembers.push_back(newDoctor);
         std::cout << "Doctor " << newDoctor->getFullName() << " added successfully!" << std::endl;
+        saveStaff("staff.txt");
     } catch (const std::exception& e) {
         std::cout << "Error adding doctor: " << e.what() << std::endl;
     }
@@ -79,6 +81,7 @@ void Hospital::addNurse(const std::string& id, const std::string& firstName, con
         Nurse* newNurse = new Nurse(id, firstName, lastName, phone, dateOfBirth, department, shift, assignedWard, canAdministerMedication);
         staffMembers.push_back(newNurse);
         std::cout << "Nurse " << newNurse->getFullName() << " added successfully!" << std::endl;
+        saveStaff("staff.txt");
     } catch (const std::exception& e) {
         std::cout << "Error adding nurse: " << e.what() << std::endl;
     }
