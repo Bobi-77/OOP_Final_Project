@@ -34,6 +34,11 @@ public:
     void displayAppointments() const;
     void conductExam(const std::string& examId, const std::string& appointmentId, const std::string& diagnosis, const std::string& notes, bool issuePrescription);
     void displayPatientHistory(const std::string& patientId) const;
+
+    void savePatients(const std::string& filename) const;
+    void saveStaff(const std::string& filename) const;
+    void loadPatients(const std::string& filename);
+    void loadStaff(const std::string& filename);
 };
 
 

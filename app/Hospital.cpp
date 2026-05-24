@@ -1,11 +1,17 @@
 #include "Hospital.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 Hospital::Hospital() {
-
+    loadPatients("patients.txt");
+    loadStaff("staff.txt");
 }
 
 Hospital::~Hospital() {
+    savePatients("patients.txt");
+    saveStaff("staff.txt");
+
     for (Staff* staff : staffMembers) {
         delete staff;
     }
@@ -249,4 +255,118 @@ void Hospital::displayPatientHistory(const std::string& patientId) const {
         std::cout << i + 1 << ". " << history[i] << std::endl;
     }
 }
+
+void Hospital::savePatients(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error opening file for saving patients: " << filename << std::endl;
+        return;
+    }
+
+    for (const Patient* patient : patients) {
+        file << patient->getId() << ";" << patient->getFirstName() << ";" << patient->getLastName() << ";" << patient->getPhone() << ";" << patient->getDateOfBirth() << std::endl;
+    }
+    file.close();
+}
+
+void Hospital::saveStaff(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error opening file for saving staff: " << filename << std::endl;
+        return;
+    }
+
+    for (const Staff* staff : staffMembers) {
+        if(staff->getRole() == "Doctor") {
+            const Doctor* doctor = dynamic_cast<const Doctor*>(staff);
+            file << "Doctor;" << doctor->getId() << ";" << doctor->getFirstName() << ";" << doctor->getLastName() << ";" << doctor->getPhone() << ";" << doctor->getDateOfBirth() << ";" << doctor->getDepartment() << ";" << doctor->getShift() << ";" << doctor->getSpeciality() << ";" << doctor->getCabinetNumber() << std::endl;
+        } else if(staff->getRole() == "Nurse") {
+            const Nurse* nurse = dynamic_cast<const Nurse*>(staff);
+            file << "Nurse;" << nurse->getId() << ";" << nurse->getFirstName() << ";" << nurse->getLastName() << ";" << nurse->getPhone() << ";" << nurse->getDateOfBirth() << ";" << nurse->getDepartment() << ";" << nurse->getShift() << ";" << nurse->getAssignedWard() << ";" << (nurse->getCanAdministerMedication() ? "1" : "0") << std::endl;
+        }
+    }
+    file.close();
+}
+
+void Hospital::loadPatients(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "No existing patient data found." << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        if(line.empty()) continue;
+
+        std::istringstream ss(line);
+        std::string id, firstName, lastName, phone, dateOfBirth;
+
+        std::getline(ss, id, ';');
+        std::getline(ss, firstName, ';');
+        std::getline(ss, lastName, ';');
+        std::getline(ss, phone, ';');
+        std::getline(ss, dateOfBirth, ';');
+
+        if(!id.empty() && !firstName.empty() && !lastName.empty()) {
+            Patient* patient = new Patient(id, firstName, lastName, phone, dateOfBirth);
+            patients.push_back(patient);
+        }
+    }
+    file.close();
+}
+
+void Hospital::loadStaff(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "No existing staff data found." << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        if(line.empty()) continue;
+
+        std::istringstream ss(line);
+        std::string role;
+        std::getline(ss, role, ';');
+
+        if (role == "Doctor") {
+            std::string id, firstName, lastName, phone, dateOfBirth, department, shift, speciality;
+            int cabinetNumber;
+
+            std::getline(ss, id, ';');
+            std::getline(ss, firstName, ';');
+            std::getline(ss, lastName, ';');
+            std::getline(ss, phone, ';');
+            std::getline(ss, dateOfBirth, ';');
+            std::getline(ss, department, ';');
+            std::getline(ss, shift, ';');
+            std::getline(ss, speciality, ';');
+            ss >> cabinetNumber;
+
+            Doctor* doctor = new Doctor(id, firstName, lastName, phone, dateOfBirth, department, shift, speciality, cabinetNumber);
+            staffMembers.push_back(doctor);
+        } else if (role == "Nurse") {
+            std::string id, firstName, lastName, phone, dateOfBirth, department, shift, assignedWard;
+            bool canAdministerMedication;
+
+            std::getline(ss, id, ';');
+            std::getline(ss, firstName, ';');
+            std::getline(ss, lastName, ';');
+            std::getline(ss, phone, ';');
+            std::getline(ss, dateOfBirth, ';');
+            std::getline(ss, department, ';');
+            std::getline(ss, shift, ';');
+            std::getline(ss, assignedWard, ';');
+            ss >> canAdministerMedication;
+
+            Nurse* nurse = new Nurse(id, firstName, lastName, phone, dateOfBirth, department, shift, assignedWard, canAdministerMedication);
+            staffMembers.push_back(nurse);
+        }
+    }
+    file.close();
+}
+
+
 

@@ -5,7 +5,7 @@ Nurse::Nurse() : Staff(), assignedWard(""), canAdministerMedication(false) {
 
 }
 
-Nurse::Nurse(const std::string& id, const std::string& firstName, const std::string& lastName, const std::string& phone, const std::string& dateOfBirth, const std::string& department, const std::string& shift, const std::string& assignedWard, bool canAdministerMedication) 
+Nurse::Nurse(const std::string& id, const std::string& firstName, const std::string& lastName, const std::string& phone, const std::string& dateOfBirth, const std::string& department, const std::string& shift, const std::string& assignedWard, bool canAdministerMedication)
     : Staff(id, firstName, lastName, phone, dateOfBirth, department, shift), assignedWard(assignedWard), canAdministerMedication(canAdministerMedication) {
 
 }
