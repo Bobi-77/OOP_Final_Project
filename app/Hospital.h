@@ -39,6 +39,8 @@ public:
     void saveStaff(const std::string& filename) const;
     void loadPatients(const std::string& filename);
     void loadStaff(const std::string& filename);
+    void saveAppointments(const std::string& filename) const;
+    void loadAppointments(const std::string& filename);
 };
 
 

@@ -6,11 +6,13 @@
 Hospital::Hospital() {
     loadPatients("patients.txt");
     loadStaff("staff.txt");
+    loadAppointments("appointments.txt");
 }
 
 Hospital::~Hospital() {
     savePatients("patients.txt");
     saveStaff("staff.txt");
+    saveAppointments("appointments.txt");
 
     for (Staff* staff : staffMembers) {
         delete staff;
@@ -145,6 +147,7 @@ void Hospital::bookRegularAppointment(const std::string& appointmentId, const st
     doctor->addBookedTime(dateTime);
 
     std::cout << "Appointment booked successfully for patient " << patient->getFullName() << " with doctor " << doctor->getFullName() << " at " << dateTime << "." << std::endl;
+    saveAppointments("appointments.txt");
 }
 
 void Hospital::cancelAppointment(const std::string& appointmentId) {
@@ -156,6 +159,7 @@ void Hospital::cancelAppointment(const std::string& appointmentId) {
             }
             appointment->cancel();
             std::cout << "Appointment with ID " << appointmentId << " has been cancelled." << std::endl;
+            saveAppointments("appointments.txt");
             return;
         }
     }
@@ -372,4 +376,72 @@ void Hospital::loadStaff(const std::string& filename) {
 }
 
 
+void Hospital::saveAppointments(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error opening file for saving appointments: " << filename << std::endl;
+        return;
+    }
 
+    for(const Appointment* appointment : appointments) {
+        file << appointment->getType() << ";" << appointment->getId() << ";" << appointment->getPatientId() << ";" << appointment->getDoctorId() << ";" << appointment->getDateTime() << ";" << appointment->getStatus() << std::endl;
+    }
+    file.close();
+}
+
+void Hospital::loadAppointments(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error opening file for loading appointments: " << filename << std::endl;
+        return;
+    }
+
+    std::string line;
+    while(std::getline(file, line)) {
+        if(line.empty()) continue;
+
+        std::istringstream iss(line);
+        std::string type, id, patientId, doctorId, dateTime, status;
+
+        std::getline(iss, type, ';');
+        std::getline(iss, id, ';');
+        std::getline(iss, patientId, ';');
+        std::getline(iss, doctorId, ';');
+        std::getline(iss, dateTime, ';');
+        std::getline(iss, status, ';');
+
+        if(!id.empty()){
+            Appointment* newAppointment = nullptr;
+
+            if(type == "Regular") {
+                newAppointment = new RegularAppointment(id, patientId, doctorId, dateTime);
+            } else if(type == "Emergency") {
+                newAppointment = new EmergencyAppointment(id, patientId, doctorId, dateTime);
+            }
+            if(newAppointment) {
+                if(status == "Cancelled") {
+                    newAppointment->cancel();
+                }
+                appointments.push_back(newAppointment);
+
+                Patient* patient = findPatientById(patientId);
+                if(patient) {
+                    patient->addAppointment(id);
+                }
+
+                if(status == "Scheduled") {
+                    for(Staff* staff : staffMembers) {
+                        if(staff->getRole() == "Doctor" && staff->getId() == doctorId) {
+                            Doctor* doctor = dynamic_cast<Doctor*>(staff);
+                            if(doctor) {
+                                doctor->addBookedTime(dateTime);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    file.close();
+}
