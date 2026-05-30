@@ -238,6 +238,7 @@ void Hospital::conductExam(const std::string& examId, const std::string& appoint
         }
 
         patient->addRecord(record);
+        savePatients("patients.txt");
     } else {
         std::cout << "Warning: Patient with ID " << currentAppointment->getPatientId() << " not found. Unable to update medical history." << std::endl;
     }
@@ -272,6 +273,15 @@ void Hospital::savePatients(const std::string& filename) const {
 
     for (const Patient* patient : patients) {
         file << patient->getId() << ";" << patient->getFirstName() << ";" << patient->getLastName() << ";" << patient->getPhone() << ";" << patient->getDateOfBirth() << std::endl;
+    
+        const std::vector<std::string>& history = patient->getMedicalHistory();
+            for (size_t i = 0; i < history.size(); ++i) {
+                file << history[i];
+                if (i < history.size() - 1) {
+                    file << "|";
+                }
+            }
+        file << std::endl;
     }
     file.close();
 }
@@ -307,16 +317,26 @@ void Hospital::loadPatients(const std::string& filename) {
         if(line.empty()) continue;
 
         std::istringstream ss(line);
-        std::string id, firstName, lastName, phone, dateOfBirth;
+        std::string id, firstName, lastName, phone, dateOfBirth, historyStr;
 
         std::getline(ss, id, ';');
         std::getline(ss, firstName, ';');
         std::getline(ss, lastName, ';');
         std::getline(ss, phone, ';');
         std::getline(ss, dateOfBirth, ';');
+        std::getline(ss, historyStr, ';');
 
         if(!id.empty() && !firstName.empty() && !lastName.empty()) {
             Patient* patient = new Patient(id, firstName, lastName, phone, dateOfBirth);
+            
+            if (!historyStr.empty()) {
+                std::istringstream historyStream(historyStr);
+                std::string record;
+                while (std::getline(historyStream, record, '|')) {
+                    patient->addRecord(record);
+                }
+            }
+
             patients.push_back(patient);
         }
     }
@@ -409,6 +429,10 @@ void Hospital::loadAppointments(const std::string& filename) {
         std::getline(iss, doctorId, ';');
         std::getline(iss, dateTime, ';');
         std::getline(iss, status, ';');
+
+        if (!status.empty() && status.back() == '\r') {
+            status.pop_back();
+        }
 
         if(!id.empty()){
             Appointment* newAppointment = nullptr;
