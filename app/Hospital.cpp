@@ -271,6 +271,8 @@ void Hospital::savePatients(const std::string& filename) const {
         return;
     }
 
+    file << "# FORMAT: ID;FirstName;LastName;Phone;DOB;MedicalHistory(separated by |)\n";
+
     for (const Patient* patient : patients) {
         file << patient->getId() << ";" << patient->getFirstName() << ";" << patient->getLastName() << ";" << patient->getPhone() << ";" << patient->getDateOfBirth() << std::endl;
     
@@ -293,6 +295,8 @@ void Hospital::saveStaff(const std::string& filename) const {
         return;
     }
 
+    file << "# FORMAT: Role;ID;FirstName;LastName;Phone;DOB;Department;Shift;Speciality/Ward;Cabinet/CanAdministerMedication\n";
+
     for (const Staff* staff : staffMembers) {
         if(staff->getRole() == "Doctor") {
             const Doctor* doctor = dynamic_cast<const Doctor*>(staff);
@@ -314,7 +318,7 @@ void Hospital::loadPatients(const std::string& filename) {
 
     std::string line;
     while (std::getline(file, line)) {
-        if(line.empty()) continue;
+        if(line.empty() || line[0] == '#') continue;
 
         std::istringstream ss(line);
         std::string id, firstName, lastName, phone, dateOfBirth, historyStr;
@@ -352,7 +356,7 @@ void Hospital::loadStaff(const std::string& filename) {
 
     std::string line;
     while (std::getline(file, line)) {
-        if(line.empty()) continue;
+        if(line.empty() || line[0] == '#') continue;
 
         std::istringstream ss(line);
         std::string role;
@@ -403,6 +407,9 @@ void Hospital::saveAppointments(const std::string& filename) const {
         return;
     }
 
+    file << "# FORMAT: Type;AppointmentID;PatientID;DoctorID;DateTime;Status\n";
+
+
     for(const Appointment* appointment : appointments) {
         file << appointment->getType() << ";" << appointment->getId() << ";" << appointment->getPatientId() << ";" << appointment->getDoctorId() << ";" << appointment->getDateTime() << ";" << appointment->getStatus() << std::endl;
     }
@@ -418,7 +425,7 @@ void Hospital::loadAppointments(const std::string& filename) {
 
     std::string line;
     while(std::getline(file, line)) {
-        if(line.empty()) continue;
+        if(line.empty() || line[0] == '#') continue;
 
         std::istringstream iss(line);
         std::string type, id, patientId, doctorId, dateTime, status;

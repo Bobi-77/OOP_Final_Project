@@ -199,7 +199,16 @@ int main(){
                 std::cout << "Invalid option! Please try again." << std::endl;
             }
         }
-    } while (choice != 0);
+        
+        if (choice != 0) {
+            std::cout << "\nPress Enter to continue...";
+            std::string temp;
+            std::getline(std::cin, temp); 
 
+            system("cls"); 
+        }
+
+    } while(choice != 0);
+    
     return 0;
 }
